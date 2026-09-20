@@ -1,7 +1,7 @@
 from decimal import Decimal
 from django.db import transaction
 from rest_framework import serializers
-from .models import Category, Product, Order, OrderItem
+from .models import Category, Product, Order, OrderItem, Employee
 
 # CATEGORY
 class CategorySerializer(serializers.ModelSerializer):
@@ -116,3 +116,20 @@ class StockUpdateSerializer(serializers.ModelSerializer):
         model = Product
         fields = ['id', 'name', 'stock']
         read_only_fields = ['id', 'name']
+    
+# EMPLOYEE
+class EmployeeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Employee
+        fields = [
+            'id', 
+            'employee_id', 
+            'name', 
+            'address', 
+            'phone', 
+            'designation', 
+            'salary', 
+            'role', 
+            'created_at', 
+            'updated_at'
+        ]

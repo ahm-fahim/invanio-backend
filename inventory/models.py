@@ -70,3 +70,28 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity}x {self.product.name} (Order #{self.order.id})"
+
+# EMPLOYEES
+# EMPLOYEES
+class Employee(models.Model):
+    ROLE_CHOICES = (
+        ('ADMIN', 'Admin'),
+        ('MANAGER', 'Manager'),
+        ('STAFF', 'Staff'),
+    )
+
+    employee_id = models.CharField(max_length=50, unique=True, help_text="Unique Employee ID (e.g. EMP-101)")
+    name = models.CharField(max_length=200)
+    address = models.TextField(blank=True, null=True)
+    phone = models.CharField(max_length=20)
+    designation = models.CharField(max_length=100)
+    salary = models.DecimalField(max_digits=12, decimal_places=2)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='STAFF')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['employee_id']
+
+    def __str__(self):
+        return f"{self.employee_id} - {self.name} ({self.designation})"
