@@ -42,3 +42,32 @@ class ProductViewSet(viewsets.ModelViewSet):
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all().order_by('-created_at')
     serializer_class = OrderSerializer
+
+    # POST /api/orders/<id>/confirm/
+    @action(detail=True, methods=['post'])
+    def confirm(self, request, pk=None):
+        order = self.get_object()
+        if order.status == 'CANCELLED':
+            return Response(
+                {"error": "Cannot confirm a cancelled order."}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        order.status = 'COMPLETED'
+        order.save()
+        return Response({"message": f"Order #{order.id} confirmed successfully.", "status": order.status})
+
+    # POST /api/orders/<id>/cancel/
+    @action(detail=True, methods=['post'])
+    def cancel(self, request, pk=None):
+        order = self.get_object()
+        if order.status == 'CANCELLED':
+            return Response({"message": "Order is already cancelled."})
+        
+        # Restore stock on cancellation
+        for item in order.items.all():
+            item.product.stock += item.quantity
+            item.product.save()
+
+        order.status = 'CANCELLED'
+        order.save()
+        return Response({"message": f"Order #{order.id} cancelled and stock restored."})

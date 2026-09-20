@@ -39,6 +39,7 @@ class Product(models.Model):
 
 
 # ORDERS
+# ORDERS
 class Order(models.Model):
     STATUS_CHOICES = (
         ('PENDING', 'Pending'),
@@ -47,6 +48,13 @@ class Order(models.Model):
     )
 
     customer_name = models.CharField(max_length=255)
+    phone = models.CharField(max_length=20)
+    location = models.TextField(help_text="Customer address / billing location")
+    delivery_location = models.TextField(help_text="Delivery / shipping address")
+    shipping_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    discount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    total_quantity = models.PositiveIntegerField(default=0)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='COMPLETED')
     created_at = models.DateTimeField(auto_now_add=True)
 
